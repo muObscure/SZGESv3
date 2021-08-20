@@ -1,3 +1,6 @@
+
+
+
 # Senzing
 
 # Generic Entity Specification
@@ -571,11 +574,11 @@ These relationships can be hierarchical or one-directional, like in the case of 
 
 ![Heirarchical Relationship](https://github.com/missulmer/SZGESv3/blob/main/Simple%20Hierarchy.png)
 
-At the same time, others may be directional, like Father, Son, Husband, or Wife. Directional relationships go from one entity to another.
+At the same time, others may be bi-directional, like Father, Son, Husband, or Wife. Directional relationships go from one entity to another.
 
-[Image example] Father son
+![Detailed bi-directional roles](https://github.com/missulmer/SZGESv3/blob/main/Domain%20Familial%20Detailed%20roles.png)
   
-
+  
 **Technical Terms**
 
 
@@ -589,12 +592,10 @@ At the same time, others may be directional, like Father, Son, Husband, or Wife.
 
 Another way to visualize this a is a network graph in the context of a domain.
 
-[Image]
+![Domain Concept](https://github.com/missulmer/SZGESv3/blob/main/Domain%20Familial%20Detailed%20roles.png)
 
-Circle which is a domain with a graph with things labeled
 
 ### Attributes for Implmenting Disclosed Relationships
-
 
 
 | Attribute name | Data Type | Example | Notes |
@@ -604,12 +605,34 @@ Circle which is a domain with a graph with things labeled
 | REL_POINTER_KEY | String | 1001 | See rel_anchor_key above. A rel_pointer_domain and key on one record point to a rel_anchor_domain and key on another record to in order to create a relationship between them.|
 | REL_POINTER_ROLE | String | SPOUSE | This is the role the anchor record plays in relationship to the pointer record. Note: Be careful not to use very long names here as so they are should appear on the line between two nodes on a graph.
 
+### Disclosed Relationship JSON Examples
+
+#### Parent Company
+
+![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/Domain%20Company.png)
+
+~~~
+JSON sample
+~~~
+#### Familial Spouse (Bi-Directional)
+
+![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/Spouse%20Bi-directional.png)
+
+~~~
+JSON sample
+~~~
+#### Familial Detailed Roles (Bi-Directional)
+
+![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/Spouse%20Bi-directional.png)
+
+~~~
+JSON sample
+~~~
+
+#### Need Help?  [Click here](https://senzing.zendesk.com/hc/en-us/requests/new) for support implmementing disclosed relationships.
 
 
-[Click here](https://senzing.zendesk.com/hc/en-us/requests/new) to get help implmementing disclosed relationships.
-
-
-### Attributes for values that are not used for entity resolution
+## Attributes for values that are not used for entity resolution
 
 Sometimes it is desirable to include additional attributes that can help determine the importance of a
 resolution or relationship. These attributes are not used for entity resolution because they are not
