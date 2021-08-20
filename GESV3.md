@@ -1,6 +1,3 @@
-
-
-
 # Senzing
 
 # Generic Entity Specification
@@ -590,9 +587,6 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 | Pointer Key |See Anchor Key above. The pointer key points to a specific entity by their ID to connect the relationship.|
 |Pointer Role | The pointer role defines the relationship, like SPOUSE or PARENT.|
 
-Another way to visualize this a is a network graph in the context of a domain.
-
-![Domain Concept](https://github.com/missulmer/SZGESv3/blob/main/Domain%20Familial%20Detailed%20roles.png)
 
 
 ### Attributes for Implmenting Disclosed Relationships
@@ -623,7 +617,7 @@ JSON sample
 ~~~
 #### Familial Detailed Roles (Bi-Directional)
 
-![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/Spouse%20Bi-directional.png)
+![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/Domain%20Familial%20Detailed%20roles.png)
 
 ~~~
 JSON sample
