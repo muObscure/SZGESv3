@@ -569,7 +569,7 @@ Examples of disclosed relationships include but are not limited to:
 
 These relationships can be hierarchical or one-directional, like in the case of "Parent Company."
 
-![Heirarchical Relationship](![Heirarchical Relationship](https://github.com/missulmer/SZGESv3/blob/main/Simple%20Hierarchy.png)
+![Heirarchical Relationship](https://github.com/missulmer/SZGESv3/blob/main/Simple%20Hierarchy.png)
 
 At the same time, others may be directional, like Father, Son, Husband, or Wife. Directional relationships go from one entity to another.
 
