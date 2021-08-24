@@ -1,6 +1,7 @@
 # Senzing
 
-# Generic Entity Specification
+# Mapping Specification & Attribute Dictonary
+*Formerly the Generic Entity Specification*
 
 ```
 Version: 3.0
@@ -47,40 +48,16 @@ Date: July 3, 2021
 
 ## Overview
 
+This document is for data experts, Data Engineering, ETL engineers, and systems engineering professionals evaluating or using Senzing Software to integrate their data sources.  
+
 The Senzing Software (TM) performs entity resolution – determining when entities are the same or related within
-and across data sources.
+and across data sources. This specification focuses on entities that are persons or organizations, such as customers, prospects, vendors, employees, and watch lists. It contains a dictionary of pre-configured attributes that are used to resolve and relate persons or companies and outlines the process of creating data sets with them so thatthey are readily consumable by the Senzing engine. The dictionary also serves to identify what features in the data is desirable to perform Entity Resolution. Data must be presented to the engine in either a JSON or CSV file format using the dictionary registered attributes contained in this specification prior to loading. 
 
-This specification focuses on entities that are persons or organizations, such as customers, prospects,
-vendors, employees, and watch lists. It contains a dictionary of pre-configured attributes that are used to
-resolve and relate persons or companies and outlines the process of creating data sets with them so that
-they are readily consumable by the Senzing engine. The dictionary also serves to identify what information
-is desirable to perform Entity Resolution.
-
-Data must be presented to the engine in either a JSON or CSV file format using the dictionary registered
-attributes contained in this specification. The advantage of JSON is that its hierarchical structure allows for
-multiple names, addresses, phones, etc to be presented in a single structure as one record may have only
-one address and another may have five. CSV files are flat and multiple values must be presented as
-additional columns, so if the maximum number of addresses is five, then all rows in the csv file will include
-space for five addresses, whether needed for that record, or not.
-
-There are several ways to load data into Senzing
-
-- You can use the G2Loader.py python script in the install package that loads JSON or CSV files. There
-    is a demo of it here ... Exploratory-Data-Analysis- 1 - Loading-the-truth-set-demo
-- You can instantiate “stream” loader processes that read from queues as demonstrated here ...
-    github.com/Senzing/docker-compose-demo
-- Or you can call Senzing directly from your current processes to add, update, delete or even search
-    records on demand by calling the API directly as documented [on the Senzing docs](https://docs.senzing.com/python/senzing-G2Engine-reference.html#Insert)
-
-In any of these cases, your source data must be mapped according to this specification.
-
-## Dictionary of registered attributes
+## Dictionary of Registered Attributes
 
 ### Attributes for the record key
 
-Senzing is an entity repository that helps locate records for the same entity across data sources. Think of it
-as a pointer system to where an entity’s records can be found. These are the fields required to tie the
-records in Senzing back to the contributing sources.
+Senzing is an entity repository that helps locate records for the same entity across data sources. Think of it as a pointer system to where an entity’s records can be found. These are the fields required to tie the records in Senzing back to the contributing sources.
 
 
 | Attribute Name| Type | Required | Example | Notes |
@@ -89,8 +66,7 @@ records in Senzing back to the contributing sources.
 | RECORD_ID | String | Desired | 1001 | If the records in your data source have a unique record ID use that value here. |
 
 
-
-#### Use of Record IDs
+### Use of Record IDs
 
 When loading records from specific sources, it is useful to prefix the record ID with the source.  
 
@@ -106,27 +82,22 @@ Examples:
 
 **_Important notes:_**
 
-- Usually, an entire file of records will be assigned the same **DATA_SOURCE** which is why it is
-    marked optional above. Both the G2Loader in the direct install and StreamLoader in the docker
-    install offer the ability to assign a default DATA_SOURCE to a file. 
-
-*why do we want this here, shouldnt this information go in the 'loading data' section not in mapping?*
+- Usually, an entire file of records will be assigned the same **DATA_SOURCE** which is why it is marked optional above. Both the G2Loader in the direct install and StreamLoader in the docker  install offer the ability to assign a default DATA_SOURCE to a file. 
 
 
 ### Attributes for names of individuals or organizations
 
 A name is a highly desirable feature to map. Most resolution rules will require a matching name.
 
-
 | Attribute name | Type | Example | Notes |
 | ----------- | ----------- | ----------- |----------- |
 | NAME_TYPE| String | PRIMARY, ALIAS, NICK | Most data sources have only one name, but when there are multiple, there is usually one primary name and the rest are aliases. Whatever terms are used here should be standardized across the data sources included in your project.|
 | NAME_ORG | String | Acme Tire Inc. | This is the organization name. |
 | NAME_LAST | String | Smith | This is the last or sur name of an individual.|
-| NAME_FIRST | String Robert | This is the first or given name of an individual.|
-| NAME_MIDDLE | String J | This is the middle name of an individual.|
+| NAME_FIRST | String | Robert | This is the first or given name of an individual.|
+| NAME_MIDDLE | String | This is the middle name of an individual.|
 | NAME_PREFIX | String | Mr | This is a prefix for an individual's name such as the titles: Mr, Mrs, Ms, Dr, etc.|
-| NAME_SUFFIX | String | MD | This is a suffix for an individual's name and may include generational references such as: JR, SR, I, II, III and/or professional designations such as: MD, PHD, PMP, etc. |
+| NAME_SUFFIX | String | SR | This is a suffix for an individual's name and may include generational references such as: JR, SR, I, II, III and/or professional designations such as: MD, PHD, PMP, etc. |
 |NAME_FULL| String | Robert J Smith | **IMPORTANT** Parse names are prefered where the Last, First and Middle names seperate attributes in the data. Full name should only be used if parsed name is not avaiable. This is the full name of an individual. The system will not allow both a full name and the parsed names to be populated in the same set of name fields. [See handling duplicate columns later in this document.]|
 
 **_Important notes:_**
@@ -147,8 +118,7 @@ as a name and the company as their employer. See Attributes for group associatio
 
 ### Attributes for addresses
 
-Addresses are important, especially when identifiers are not available. One of the more common
-resolutions will be made on name and address.
+Addresses are important, especially when identifiers are not available. One of the more common resolutions will be made on name and address.
 
 | Attribute name | Type | Example | Notes |
 | ----------- | ----------- | ----------- |----------- |
@@ -169,17 +139,14 @@ resolutions will be made on name and address.
 
 **_Important notes:_**
 
-- The **ADDR_FULL** attribute is provided if the parsed address fields are unavailable. You would not
-    map both an **ADDR_FULL** and any other address fields in the same address segment.
+- The **ADDR_FULL** attribute is provided if the parsed address fields are unavailable. You would not map both an **ADDR_FULL** and any other address fields in the same address segment.
     
-- The "BUSINESS” **ADDR_TYPE** adds weight to physical business addresses. See Special attribute
-    types and labels for when to use this.
+- The "BUSINESS” **ADDR_TYPE** adds weight to physical business addresses. See Special attribute types and labels for when to use this.
 
 
 ### Attributes for phone numbers
 
-Like addresses, phone numbers can be important, especially when identifiers are not available. A common
-resolution will be based on name, phone, and date of birth.
+Like addresses, phone numbers can be important, especially when identifiers are not available. A common resolution will be based on name, phone, and date of birth.
 
 | Attribute name | Type | Example | Notes |
 | ----------- | ----------- | ----------- |----------- |
@@ -190,14 +157,12 @@ resolution will be based on name, phone, and date of birth.
 
 **_Important notes:_**
 
-- The "MOBILE” phone type adds weight to mobile phones. See Special attribute types and labels for
-    when to use this.
+- The "MOBILE” phone type adds weight to mobile phones. See Special attribute types and labels for when to use this.
 
 
 ### Attributes for physical and other attributes
 
-Physical attributes can like DATE_OF_BIRTH help reduce over matching (false positives). Usually gender
-and date of birth are available and should be mapped if possible.
+Physical attributes can like DATE_OF_BIRTH help reduce over matching (false positives). Usually gender and date of birth are available and should be mapped if possible.
 
 | Attribute name | Type | Example | Notes |
 | ----------- | ----------- | ----------- |----------- |
@@ -213,8 +178,7 @@ and date of birth are available and should be mapped if possible.
 
 ### Attributes for government issued identifiers
 
-Government issued IDs help to confirm or deny matches. The following identifiers should be mapped if
-available.
+Government issued IDs help to confirm or deny matches. The following identifiers should be mapped if available.
 
 
 | Attribute name | Type | Example | Notes |
@@ -238,17 +202,11 @@ available.
 
 **_Important notes:_**
 
-- A **TRUSTED_ID** is a very special identifier that will resolve records together even if they have
-    different names, dobs, or other identifiers. For example, if the SSN of a data source is so trusted it
-    should resolve records despite other differences, it can also be mapped as a
-    **TRUSTED_ID_NUMBER** with the **TRUSTED_ID_TYPE** of “SSN” to resolve within and across data
-    sources that are so trusted.
-- A **TRUSTED_ID** can also be used to manually force records together or apart as described here...
-    https://senzing.zendesk.com/hc/en-us/articles/360023523354-How-to-force-records-together-
-    or-apart
-- _Use *_ **_OTHER_ID_** _sparingly! It is just a catch all for identifiers you know nothing about but still want_
-    _to use to help match. Therefore if you know anything about an identifier not listed above, you should_
-    _add it as its own identifier as described here ..._ How to add a new identifier_._
+- A **TRUSTED_ID** is a very special identifier that will resolve records together even if they have different names, dobs, or other identifiers. For example, if the SSN of a data source is so trusted it  should resolve records despite other differences, it can also be mapped as a **TRUSTED_ID_NUMBER** with the **TRUSTED_ID_TYPE** of “SSN” to resolve within and across data  sources that are so trusted.
+
+- A **TRUSTED_ID** can also be used to manually force records together or apart. Prior to use, please [read the documentation.](https://senzing.zendesk.com/hc/en-us/articles/360023523354-How-to-force-records-together-or-apart)
+    
+- Use  **OTHER_ID** sparingly! It is just a catch-all for identifiers you don't understand well but still want to use to help match records to entities. If you have custom identifiers, you need to configure your identifier in Senzing.  (See Additional Configuration for more information.)
 
 
 ### Attributes for identifiers issued by organizations
@@ -300,25 +258,50 @@ have name and who they work for as useful attributes.
 
 **_Important Notes:_**
 
-- Group associations should not be confused with disclosed relationships described later in this
-    document. Group associations help resolve entities whereas disclosed relationships help relate
-    them.
-- If all you have in common between two data sources are name and who they work for, a group
-    association can help resolve the Joe Smiths that work at ABC company together.
-- Group associations are subject to generic thresholds to help reduce false positives and keep the
-    system fast. Therefore they will not help resolve _all_ the employees of a large company across data
-    sources. But they could help to resolve the smaller groups of executives, primary contacts, or
-    owners of large companies across data sources.
+- Group associations should not be confused with disclosed relationships described later in this document. Group associations help resolve entities whereas disclosed relationships help relate them.
+- If all you have in common between two data sources are name and who they work for, a group association can help resolve the Joe Smiths that work at ABC company together.
+- Group associations are subject to default entity thresholds to help reduce false positives and keep the system fast. Therefore they will not help resolve _all_ the employees of a large company across data sources. But they could help to resolve the smaller groups of executives, primary contacts, or owners of large companies across data sources.
 
-## Mapping source data
+## Mapping Source Data
+We are here to help anyone! [Request a free mapping review session](https://senzing.zendesk.com/hc/en-us/requests/new)  with Success Team.
+
+Senzing entity resolution works best when as many relevant features as possible are mapped from your source data. In the next section, we will look at examples of features of map people and companies. We've provided the corresponding samples for people and companies in [CSV](https://github.com/missulmer/SZGESv3/tree/main/sample_csvs) and [JSON](https://github.com/missulmer/SZGESv3/tree/main/json_sample) via Github. 
+
+These files contain the likely fields you will run into when mapping organizations to the default entity format. In fact, you should try to map as many of these fields as possible. 
+
+**Sample Person Features**
+- Primary name
+- Date of birth and gender
+- Passport, driver’s license, social security number, national insurance number
+- Home and mailing addresses
+- Home and cell phone numbers
+- Email and social media handles
+- Groups that they are associated with such as their employer name
+- Any key dates, statuses or amounts that can help you find meaning in the matches. For instance, a vendor related to an employee who has influence over purchases is more important than the same vendor related to an employee that doesn’t.
+
+** Sample Features for An Organization**
+
+The [sample_organization.csv](https://github.com/missulmer/SZGESv3/tree/main/sample_csvs) attached to this article can be used to map your data to if desired. There is
+also a corresponding sample_organization.json file if you prefer.  The sample organization structure contains fields for ...
+
+- Primary name
+- Tax ID number, like employer identification number
+- Other ID numbers, like a Dunn and Bradstreet number
+- Primary and mailing addresses
+- Primary and other phone numbers
+- Website and social media handles
+- Any key dates, statuses or amounts that can help you find meaning in the matches. For instance, a current company you do business with who is on a watch list for bad reasons is more important than the same match to a company you did business with several years ago.
+
+**Recommendation**
+
+We recommend JSON due to its hierarchical structure which allows for multiple names, addresses, phones, etc to be presented in a single structure as one record may have only one address and another may have five. Where as CSV files are flat and multiple values must be presented as additional columns, so if the maximum number of addresses is five, then all rows in the csv file will include space for five addresses, whether needed for that record, or not.
+
 
 ### Creating JSON files
 
-Below is the basic structure of a json record the engine can consume. Note that most attributes are at the
-root level. However, lists must be used when there are multiple values for the same attributes.
+Below is the basic structure of a json record the engine can consume. Note that most attributes are at the root level. However, lists must be used when there are multiple values for the same attributes.
 
 ### Sample JSON structure for a People
-
 ~~~
 // a data source code is required, must be UPPER CASE and not greater than 25 char
 "DATA_SOURCE": "CUSTOMER ",
@@ -370,11 +353,11 @@ root level. However, lists must be used when there are multiple values for the s
 "SOCIAL_HANDLE": "@bobjones27",
 "SOCIAL_NETWORK": "twitter"}
 ~~~
-*You can grap a person sample here : Github*
+**[View on Github](https://github.com/missulmer/SZGESv3/blob/main/json_sample/sample_person.json)**
 
 ### Sample JSON Describing Companies
 
-###JSON
+
 ~~~
 {"DATA_SOURCE": "COMPANYDATA ",
 "RECORD_ID": 2001,
@@ -468,14 +451,15 @@ root level. However, lists must be used when there are multiple values for the s
 
 "WEBSITE_ADDRESS": "fabrics-unlimited.com"}
 ~~~~
+**[View on Github](https://github.com/missulmer/SZGESv3/blob/main/json_sample/sample_company.json)**
+
+Have questions? [Ask our Success Team](https://senzing.zendesk.com/hc/en-us/requests/new). We are happy to help anyone.
 
 ### Creating CSV files
 
-Mapping csv files is normally accomplished by replacing the column header names with the registered
-attributes names contained in this specification. 
+Mapping csv files is normally accomplished by replacing the column header names with the registered attributes names contained in this specification. 
 
-Column names in a CSV must be unique, so multiple values for attributes such as multiple names, multiple addresses, must be prefixed with a term denoting the
-type of name, address, phone number. 
+Column names in a CSV must be unique, so multiple values for attributes such as multiple names, multiple addresses, must be prefixed with a term denoting the type of name, address, phone number. 
 
 Here is the list of column headers that could be used to flatten out the JSON example above in the previous code blocks.
 
@@ -506,6 +490,8 @@ Here is the list of column headers that could be used to flatten out the JSON ex
 | AGE_BRACKET | |
 | INCOME_LEVEL | |
 
+**Mapping CSV Files**
+
 A mapped csv file actually looks this and is usually accomplished by simply replacing the current column
 headers with corresponding attribute labels and names in this specification.
 
@@ -516,45 +502,39 @@ headers with corresponding attribute labels and names in this specification.
 | 1003 | Cooper | Cindy | Rose |
 
 
-The sample_person.csv attached to this article can be used to map your data to if desired. There is also a
-corresponding sample_person.json file if you prefer. These files contain the likely fields you will run into
-when mapping persons to the generic entity format. In fact, you should try to map as many of these fields
-as possible. The sample person structure contains fields for ...
+Have questions? [Ask our Success Team](https://senzing.zendesk.com/hc/en-us/requests/new). We are happy to help anyone.
 
-- Primary name
-- Date of birth and gender
-- Passport, driver’s license, social security number, national insurance number
-- Home and mailing addresses
-- Home and cell phone numbers
-- Email and social media handles
-- Groups that they are associated with such as their employer name
-- Any key dates, statuses or amounts that can help you find meaning in the matches. For instance, a
-    vendor related to an employee who has influence over purchases is more important than the same
-    vendor related to an employee that doesn’t.
+## Special attribute types and labels
 
-### Sample structure for an organization
+Some features have special labels that add weight to them. For instance, you might find a whole family at a
+“home” address, but only one company (or company facility) at its physical “business” address. The
+following special labels can be used to augment a feature’s weight ...
 
-The sample_organization.csv attached to this article can be used to map your data to if desired. There is
-also a corresponding sample_organization.json file if you prefer. These files contain the likely fields you will
-run into when mapping organizations to the generic entity format. In fact, you should try to map as many of
-these fields as possible. The sample organization structure contains fields for ...
+| Feature | Lable | Notes | Usage |
+| ----------- | ----------- | ----------- |----------- |
+| NAME |PRIMARY | People can have aka’s and nicknames; companies can have dbas.When the system resolves multiple records into an entity, the most complete “primary” name will be chosen over any other type.| Common, needed To help select the best name to display for an entity. |
+| ADDRESS | BUSINESS | Companies with multiple facilities or outlets often share corporate phone numbers and website addresses. | Use this label to help break matches based on their physical location. | Common, used to prevent overmatching of companies.|
+| PHONE | MOBILE | Home and work phone numbersare usually shared. Use this labelto add weight to mobile or “cell” phones as they are shared far less often. | Rare.Only apply if data source reliably uses mobile phones to distinguish entities.|
 
-- Primary name
-- Tax ID number, like employer identification number
-- Other ID numbers, like a Dunn and Bradstreet number
-- Primary and mailing addresses
-- Primary and other phone numbers
-- Website and social media handles
-- Any key dates, statuses or amounts that can help you find meaning in the matches. For instance, a
-    current company you do business with who is on a watch list for bad reasons is more important
-    than the same match to a company you did business with several years ago.
+**How to use:**
 
-[Need Help?](https://senzing.zendesk.com/hc/en-us/requests/new) Schedule a mapping review session with Customer Success.
+**JSON Example**
+~~~
+"ADDRESS_LIST": [{
+//Use the “type”attribute in a json list
+    "ADDR_TYPE": "BUSINESS", 
+    "ADDR_LINE1": "111 First St",
+    "ADDR_CITY": "Anytown",
+~~~
+
+**CSV Example**
+| BUSINESS_ADDR_LINE1 | BUSINESS_ADDR_CITY |
+| ----------- |  ----------- | 
+|111 First St | Anytown |
 
 ## Disclosed Relationship Mapping
 
 ### Understanding Disclosed Relationships
-
 
 Disclosed relationships are essential when systems or people make decisions based on a contextual awareness from the data of known relationships between entities. Some data sources keep track of known relationships between entities, such as familial relationships and company hierarchies. This structure allows you to tell the Senzing software about such relationships. Look for a table within the source system that defines such relationships use them to implement your disclosed relationship mappings.
 
@@ -620,20 +600,61 @@ JSON sample
 ![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/Domain%20Familial%20Detailed%20roles.png)
 
 ~~~
-JSON sample
+{"DATA_SOURCE": "CUSTOMERS", 
+  "ENTITY_TYPE": "GENERIC", 
+  "RECORD_ID": "1", 
+  "PRIMARY_NAME_LAST": "Hawklin", 
+  "PRIMARY_NAME_FIRST": "Rob",
+  "NAME_SUFFIX" : "Sr"
+  "HOME_ADDR_LINE1": "2280 Stoney Lonesome Road", 
+  "HOME_ADDR_CITY": "Pittston", 
+  "HOME_ADDR_STATE": "PA", 
+  "HOME_ADDR_POSTAL_CODE": "18640", 
+  "HOME_PHONE_NUMBER": "570-300-5826", 
+  "DATE_OF_BIRTH": "4/13/69", 
+  "SSN_NUMBER": "189-50-0966", 
+  "DRIVERS_LICENSE_NUMBER": "N9123912",
+  "DRIVERS_LICENSE_STATE": "NV",
+  
+  "RELATIONSHIP_LIST": [{
+    "REL_ANCHOR_DOMAIN": "CUSTOMER_ID", 
+    "REL_ANCHOR_KEY": "1001"}, 
+    {"REL_POINTER_DOMAIN": "CUSTOMER_ID", 
+    "REL_POINTER_KEY": "1003",
+    "REL_POINTER_ROLE": "Father"}]
+
+    "RECORD_ID": "2", 
+    "PRIMARY_NAME_LAST": "Hawklin", 
+    "PRIMARY_NAME_FIRST": "Robby",  
+    "NAME_SUFFIX" : "Jr"
+    "HOME_ADDR_LINE1": "2280 Stoney Lonesome Road", 
+    "HOME_ADDR_CITY": "Pittston", 
+    "HOME_ADDR_STATE": "PA", 
+    "HOME_ADDR_POSTAL_CODE": "18640", 
+    "HOME_PHONE_NUMBER": "570-300-5826", 
+    "DATE_OF_BIRTH": "7/23/81", 
+    "SSN_NUMBER": "379-90-6843", 
+    "DRIVERS_LICENSE_NUMBER": "N2549821",
+    "DRIVERS_LICENSE_STATE": "NV",
+    
+    "RELATIONSHIP_LIST": [
+      {"REL_ANCHOR_DOMAIN": "CUSTOMER_ID", 
+      "REL_ANCHOR_KEY": "1003"}, 
+      {"REL_POINTER_DOMAIN": "CUSTOMER_ID", 
+      "REL_POINTER_KEY": "1001",
+      "REL_POINTER_ROLE": "Son"}]
+      }
 ~~~
 
-#### Need Help?  [Click here](https://senzing.zendesk.com/hc/en-us/requests/new) for support implmementing disclosed relationships.
+#### Have questions?  [Click here](https://senzing.zendesk.com/hc/en-us/requests/new) for help implmementing disclosed relationships.
+
 
 
 ## Attributes for values that are not used for entity resolution
 
-Sometimes it is desirable to include additional attributes that can help determine the importance of a
-resolution or relationship. These attributes are not used for entity resolution because they are not
-configured in Senzing. These attributes may include values such as additional dates, statuses, types, flags,
-or aggregated amounts at the entity level.
+Sometimes it is desirable to include additional attributes that can help add further context to what's understood about an entity or relationships in the data. These attributes are not used for entity resolution because they do not help with the entity resolution but are useful additional information stored on the entity to inform people or systems.  Senzing comes with a default configuration for features and entities, this is sometimes refered to as 'generic' entity types or features thoughout our documentation, comments and code. Features not configured to create entities or find relationships pass through to the entity's profile. Examples include additional dates, statuses, types, flags, or aggregated amounts at the entity level.
 
-For example:
+**Examples:**
 
 - The LIFETIME_VALUE of a customer can help determine what kind of discount should be applied to
     their order or if a new customer is related to a high value customer.
@@ -651,172 +672,28 @@ larger Senzing systems, it is best practice to load only the configured attribut
 and use a data warehouse or other external system to access additional non-Senzing attributes.
 
 
-## Special attribute types and labels
-
-Some features have special labels that add weight to them. For instance, you might find a whole family at a
-“home” address, but only one company (or company facility) at its physical “business” address. The
-following special labels can be used to augment a feature’s weight ...
-
-| Feature | Lable | Notes | Usage |
-| ----------- | ----------- | ----------- |----------- |
-| NAME |PRIMARY | People can have aka’s and nicknames; companies can have dbas.When the system resolves multiple records into an entity, the most complete “primary” name will be chosen over any other type.| Common, needed To help select the best name to
-display for an entity. |
-| ADDRESS BUSINESS | Companies with multiple facilities or outlets often share corporate phone numbers and website addresses. | Use this label to help break matches based on their physical location. | Common, used to prevent overmatching of companies.|
-| PHONE MOBILE | Home and work phone numbersare usually shared. Use this labelto add weight to mobile or “cell” phones as they are shared far less often. | Rare.Only apply if data source reliably uses mobile phones to distinguish entities.|
-
-**How to use:**
-
-Labels are either used as an attribute prefix for CSVs such as:
-...
-"BUSINESS_ADDR_LINE1": "111 First St ",
-"BUSINESS_ADDR_CITY": "Anytown",
-...
-
-Or by its “type”attribute in a json list such as:
-"ADDRESS_LIST": [{
-"ADDR_TYPE": "BUSINESS", 
-"ADDR_LINE1": "111 First St",
-"ADDR_CITY": "Anytown",
-...
-
-
 ## Loading Data
 
-*This section needs to point to specific stack and data pub/sub/log based data pipeline methods. It doesnt belong in the Generic Ent Spec *
+**Important: Loading data requires you to convert your source data to the Senzing input format before loading.**  If you have not yet completed this step, please review the Mapping Section of this document.
 
-A project file is not necessary, but the G2Loader.py python script can either load files one by one with a -f
-parameter or multiple files listed in a project file with the -p parameter. The project file itself may either
-be a JSON file or a CSV file using the following column or tag names.
+There are a number of methods for loading data into Senzing.  Choose the method that best aligns with your use context:
 
-| Attribute name | Data Type | Example | Notes |
-| ----------- | ----------- | ----------- |----------- |
-| DATA_SOURCE | String | CUSTOMER | This is an important designation for reporting. For instance, you may want to know how many customers are onwatch lists, or how many customers inone data set match customers from another. Choose your data source codes based on how you want your reports to appear.|
-| FILE_FORMAT | String | CSV |  This is the format of the files for this source. Valid values are JSON, CSV, TAB,or PIPE.
-| FILE_NAME | String | custdump_20160511.csv | This is the name of the file that contains the data for this data source.| 
+**Senzing Evaluations:**
+* Baremetal on Linux 
+* Senzing AWS Evaluation via Marketplace
+* Docker-Compose-Demo instance using:
+	* RabbitMQ
+	* Kafka
 
+**Production Deployments:**
+* AWS SQS
+* RabbitMQ
+* Kaf
 
-### Data Loading  -- *Rethink this section since we have MQ, SQS, G2Loader, Stream-loader?*
+## Additional Configuration
 
-When creating a file of JSON messages for the G2Loader program, each message should be on one line. It is
-expecting a file of JSON messages, like so ...
+Senzing comes pre-configured with all the features, attributes, and settings you will likely need to begin resolving persons and organizations immediately.  However, when you need to configure new features for your entities.  A typical example of a custom feature(s) are identifiers unique to your data.
 
-```
-{"DATA_SOURCE": "CUSTOMER ", "RECORD_ID": "1001", "NAME": [{"NAME_TYPE": "PRIMARY", "NAME_LAST": "Adams", ...
-{"DATA_SOURCE": "CUSTOMER ", "RECORD_ID": "100 2 ", "NAME": [{"NAME_TYPE": "PRIMARY", "NAME_LAST": "Baker", ...
-{"DATA_SOURCE": "CUSTOMER ", "RECORD_ID": "100 3 ", "NAME": [{"NAME_TYPE": "PRIMARY", "NAME_LAST": "Cooper", ...
-```
+If you have unique features that you feel are imporant for resolving your entities, [contact Customer Success](https://senzing.zendesk.com/hc/en-us/requests/new) and we will guide you through feature creation.
 
-
-
-
-### Multisource data loads- Adding a data source
-* This needs to move
-
-Adding a new data source is a simple as registering the code you want to use for it. Most of the reporting
-you will want to do is based on matches within or across data sources. For instance ...
-
-- If you want to know when a customer record matches a watchlist record, you should have a data
-    source named “CUSTOMER” and another one named “WATCHLIST”.
-- Or if you are matching two customer data sources to find the overlap, you should have one data
-    source named CUSTOMER1 and another named CUSTOMER2 or to be more descriptive you might
-    name them based on the line of business such as “BANKING-CUSTOMER” and “MORTGAGE-
-    CUSTOMER”.
-
-To add a new data source named “CUSTOMER”, at the the G2ConfogTool prompt type ...
-
-```
-addDataSource CUSTOMER
-```
-## Additional configuration
-
-Senzing comes pre-configured with all the features, attributes, and settings you will likely need to begin
-resolving persons and organizations immediately. The only configuration that really needs to be added is
-what you named your data sources.
-
-The way you configure Senzing is through the G2ConfigTool.py script located on the python folder in the
-directory tree for your project. To use it, go to the python folder and type ...
-
-```
-> G2ConfigTool.py
-```
-Then type “help” at the prompt. There is a lot you can do in there, but most of it you should not use unless
-directed to do so by Senzing support. For instance, adding new rules or adjusting thresholds should not be
-attempted without first contacting support for guidance.
-
-However, you will often use this tool to add new data sources and sometimes to add new identifiers that
-are not in our default for configuration.
-
-### How to add a new identifier
-
-// *This section seems to need to not be part of the Generic Entity Specification.  It should be linked from this md.
-This fits in the bucket of managing configuration of the engine.  It doesn't relate specficially to our out of the box behavior and data definitions.*//
-
-Occasionally, you will need to add a new kind of identifier. This consists of adding a feature and its
-associated attributes and there are templates to help you. At the G2ConfigTool prompt type “templateAdd
-list” to see the current list of templates.
-
-The Senzing engine performs behavior based matched which you can read more about here ... Principle-
-Based-Entity-Resolution
-
-For identifiers, the three behaviors you can choose from are ...
-
-- **F1** is the default and means that only one person should have this identifier, but it is possible or
-    even likely for them to have two. A match on name and address will not be broken there are
-    conflicting F1s
-- **F1E** adds the “exclusive” behavior which means they should only have one. A match on name and
-    address will be broken if each record has a different F1E
-- **F1ES** – Adds the “exclusive” and “stable” behaviors which adds more weight to the identifier. It will
-    not only break matches, but it will help cement them. If two records share an F1ES but have a
-    conflicting F1E, the match will not be broken. Conversely, if two records share an F1E but have a
-    conflicting F1ES the match will be broken.
-
-For identifiers, the two comparisons you can choose from are ...
-
-- **ID_COMP** is the default and does a fuzzy comparison of identifier strings.
-- **EXACT_COMP** which requires the identifier strings to match exactly. It is rare that you will want to
-    switch to this as transposition errors in human entered strings are quite common.
-
-
-While that is a lot to take in, look at it like this ...
-
-- If you want the new identifier to break matches, make it an **F1E**
-- If you want the new identifier to help ensure a match, make it an **F1ES**
-- And if you are not entirely sure that it should do either, make it a plain **F1**. It is pretty rare to find
-    reliable **F1E** and **F1ES** identifiers other than government issued ones we come pre-configured with.
-
-Most new identifiers will be added like this ...
-
-```
-templateAdd {"feature": "MY_NEW_ID", "template": "global_id"}
-```
-
-This will create a feature and an attribute you can map to called: MY_NEW_ID. It will help make
-matches; but will not help break matches. A person or company can have more than one of them.
-
-Since ID_COMP is the default comparison, transposition errors will be considered close. If you want
-to force an exact comparison, you would add it like this:
-
-```
-templateAdd {"feature": "MY_NEW_ID", "template": "global_id", “comparison”: “EXACT_COMP}
-```
-If you have a state bounded identifier, where the same ID number might be issued by different states you
-would add it like this:
-
-```
-templateAdd {"feature": "MY_NEW_ID", "template": "state_id"}
-```
-
-This will create a feature called MY_NEW_ID with the attributes: MY_NEW_ID_NUMBER and
-MY_NEW_ID_STATE that you can map to.
-
-It can only compared with ID_COMP due to the fact that some sources might supply the state field
-while others may not and human entered ID numbers and state codes are often mistyped.
-
-If you wanted to add weight to this new identifier, you would add it like this ...
-
-```
-templateAdd {"feature": "MY_NEW_ID", "template": "state_id", “behavior”: “F1E}
-```
-And for a country bounded identifier, you would just replace the template **state_id** with **country_id** above.
-
-
+Likewise, you have other entity or feature configuration questions, [please be in touch.](https://senzing.zendesk.com/hc/en-us/requests/new)
