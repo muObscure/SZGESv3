@@ -23,7 +23,7 @@ Date: July 3, 2021
    - Attributes for identifiers issued by organizations
    - Attributes for websites, emails, and other social handles
    - Attributes for group associations
-- Mapping source data
+- Mapping Source Data
 	- Creating JSON files
    - Creating CSV files
    - Sample structure for a person
@@ -35,7 +35,6 @@ Date: July 3, 2021
 - Additional configuration
    - How to add a data source
    - How to add a new identifier
-  
 - Loading Data 
 	- 	Baremetal with G2loader
 	-  Docker-Compose
@@ -51,14 +50,13 @@ Date: July 3, 2021
 This document is for data experts, Data Engineering, ETL engineers, and systems engineering professionals evaluating or using Senzing Software to integrate their data sources.  
 
 The Senzing Software (TM) performs entity resolution – determining when entities are the same or related within
-and across data sources. This specification focuses on entities that are persons or organizations, such as customers, prospects, vendors, employees, and watch lists. It contains a dictionary of pre-configured attributes that are used to resolve and relate persons or companies and outlines the process of creating data sets with them so thatthey are readily consumable by the Senzing engine. The dictionary also serves to identify what features in the data is desirable to perform Entity Resolution. Data must be presented to the engine in either a JSON or CSV file format using the dictionary registered attributes contained in this specification prior to loading. 
+and across data sources. This specification focuses on entities that are persons or organizations, such as customers, prospects, vendors, employees, and watch lists. It contains a dictionary of pre-configured attributes that are used to resolve and relate persons or companies and outlines the process of creating data sets with them so that they are readily consumable by the Senzing engine. The dictionary also serves to identify what features in the data is desirable to perform Entity Resolution. Data must be presented to the engine in either a JSON or CSV file format using the dictionary registered attributes contained in this specification prior to loading. 
 
 ## Dictionary of Registered Attributes
 
-### Attributes for the record key
-
 Senzing is an entity repository that helps locate records for the same entity across data sources. Think of it as a pointer system to where an entity’s records can be found. These are the fields required to tie the records in Senzing back to the contributing sources.
 
+### Attributes for the record key
 
 | Attribute Name| Type | Required | Example | Notes |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
@@ -77,12 +75,12 @@ Examples:
 | EMPLOYEES |	012934 | employees_012934|Include the data source name with the record id from that source|
 | CUSTOMERS |	0012746 | customers_0012746|(same as above)|
 | TRANSACTIONS |	gh342301 | transactions_gh342301| **Non-keyed Lists**: An event or transaction with identifying information about a non-keyed or external entity such as a money transfer to an external party. The record_id in this case would be the transaction_id. |
-| Spreadsheet |	leave blank | *system generated* | **Non-keyed Lists**: Leaving the record_id blanks will cause the sytem to generate one automatically.
+| SPREADSHEET |	leave blank | *system generated* | **Non-keyed Lists**: Leaving the record_id blanks will cause the sytem to generate one automatically.
 
 
-**_Important notes:_**
+**Important**
 
-- Usually, an entire file of records will be assigned the same **DATA_SOURCE** which is why it is marked optional above. Both the G2Loader in the direct install and StreamLoader in the docker  install offer the ability to assign a default DATA_SOURCE to a file. 
+- Usually, an entire file of records will be assigned the same **DATA_SOURCE** which is why it is marked optional above. Both the G2Loader in the direct install and StreamLoader in the docker  install offer the ability to assign a default DATA_SOURCE to a file.  This is explained further in the *Loading Data Handbook.* {Link}
 
 
 ### Attributes for names of individuals or organizations
@@ -95,12 +93,12 @@ A name is a highly desirable feature to map. Most resolution rules will require 
 | NAME_ORG | String | Acme Tire Inc. | This is the organization name. |
 | NAME_LAST | String | Smith | This is the last or sur name of an individual.|
 | NAME_FIRST | String | Robert | This is the first or given name of an individual.|
-| NAME_MIDDLE | String | This is the middle name of an individual.|
+| NAME_MIDDLE | String | John |This is the middle name of an individual.|
 | NAME_PREFIX | String | Mr | This is a prefix for an individual's name such as the titles: Mr, Mrs, Ms, Dr, etc.|
 | NAME_SUFFIX | String | SR | This is a suffix for an individual's name and may include generational references such as: JR, SR, I, II, III and/or professional designations such as: MD, PHD, PMP, etc. |
-|NAME_FULL| String | Robert J Smith | **IMPORTANT** Parse names are prefered where the Last, First and Middle names seperate attributes in the data. Full name should only be used if parsed name is not avaiable. This is the full name of an individual. The system will not allow both a full name and the parsed names to be populated in the same set of name fields. [See handling duplicate columns later in this document.]|
+|NAME_FULL| String | Robert J Smith | **IMPORTANT** Parsed names are prefered where the Last, First, and Middle names seperate attributes in the data. Full name should only be used if parsed name is not avaiable. This is the full name of an individual. The system will not allow both a full name and the parsed names to be populated in the same set of name fields. [See handling duplicate columns later in this document.]|
 
-**_Important notes:_**
+**Important**
 
  - The "PRIMARY” **NAME_TYPE** helps select the best name to display for an entity. See Special
     attribute types and labels for when to use this. It is best to always specify name type.
@@ -111,9 +109,7 @@ A name is a highly desirable feature to map. Most resolution rules will require 
 
  - If using NAME_ORG then this record should be about an organization, not an individual i.e., do not map any of the individual name fields. You would not map both a NAME_ORG and any other name fields in the same name segment.
 
- - Sometimes there is both an organization name and a person name on a record, such as a contact list
-where you have the person and who they work for. In this case, you would map the person’s name
-as a name and the company as their employer. See Attributes for group associations for more information on this important distinction.
+ - Sometimes there is both an organization name and a person name on a record, such as a contact list where you have the person and who they work for. In this case, you would map the person’s name as a name and the company as their employer. See Attributes for group associations for more information on this important distinction.
 
 
 ### Attributes for addresses
@@ -126,9 +122,9 @@ Addresses are important, especially when identifiers are not available. One of t
 | ADDR_LINE1| String | 111 First St | This is the first address line and is required if an address is presented.|
 | ADDR_LINE2 | String | Suite 101 | This is the second address line if needed.|
 | ADDR_LINE3 | String | This is the third address line if needed.|
-| ADDR_LINE4| String | This is the fourth address line if needed.|
-| ADDR_LINE5 | String |This is the fifth address line if needed. |
-| ADDR_LINE6 | String |This is the sixth address line if needed. |
+| ADDR_LINE4| String ||This is the fourth address line if needed.|
+| ADDR_LINE5 | String ||This is the fifth address line if needed. |
+| ADDR_LINE6 | String ||This is the sixth address line if needed. |
 | ADDR_CITY | String | Las Vegas | This is the city of the address.|
 | ADDR_STATE | String | NV |This is the state or province of the address.|
 | ADDR_POSTAL_CODE | String | 89111 | This is the zip or postal code of the address.|
@@ -137,7 +133,7 @@ Addresses are important, especially when identifiers are not available. One of t
 |ADDR_FROM_DATE | Date | 2016-01-14 | This is the date the entity started using the address if known. It is the used to determine the latest value of this type being used by the entity.|
 |ADDR_THRU_DATE| Date |This is the date the entity stopped using the address if known.|
 
-**_Important notes:_**
+**Important**
 
 - The **ADDR_FULL** attribute is provided if the parsed address fields are unavailable. You would not map both an **ADDR_FULL** and any other address fields in the same address segment.
     
@@ -155,7 +151,7 @@ Like addresses, phone numbers can be important, especially when identifiers are 
 |PHONE_FROM_DATE | Date | 2016-01-14 | This is the date the entity started using the phone number if known. It is the used to determine the latest value of this type being used by the entity. |
 | PHONE_THRU_DATE | Date | 2021-07-06 |This is the date the entity stopped using the phone number if known.|
 
-**_Important notes:_**
+**Important**
 
 - The "MOBILE” phone type adds weight to mobile phones. See Special attribute types and labels for when to use this.
 
@@ -173,8 +169,8 @@ Physical attributes can like DATE_OF_BIRTH help reduce over matching (false posi
 |CITIZENSHIP| String | UK | This is the country the person is a citizen of and should contain a country name or code.|
 |PLACE_OF_BIRTH|String| US |This is where the person was born. Ideally it is a country name or code. However, they often contain city names as well.|
 | RECORD_TYPE | String | PERSON | This is a good value to include if known and persons areresolving to organizations. Use standardized terms like PERSON and ORGANIZATION across all your data sources.|
-|REGISTRATION_DATE | String | 2010-05-14 This is the date the organization was registered, like date of birth is to a person.|
-| REGISTRATION_COUNTRY | String | US This is the country the organization was registered in, like place of birth is to a person. |
+|REGISTRATION_DATE | String | 2010-05-14 | This is the date the organization was registered, like date of birth is to a person.|
+| REGISTRATION_COUNTRY | String | US | This is the country the organization was registered in, like place of birth is to a person. |
 
 ### Attributes for government issued identifiers
 
@@ -202,11 +198,11 @@ Government issued IDs help to confirm or deny matches. The following identifiers
 
 **_Important notes:_**
 
-- A **TRUSTED_ID** is a very special identifier that will resolve records together even if they have different names, dobs, or other identifiers. For example, if the SSN of a data source is so trusted it  should resolve records despite other differences, it can also be mapped as a **TRUSTED_ID_NUMBER** with the **TRUSTED_ID_TYPE** of “SSN” to resolve within and across data  sources that are so trusted.
+- A **TRUSTED_ID** is a very special identifier that will resolve records together even if they have different names, dates of birth, or other identifiers. For example, if the SSN of a data source is so trusted it  should resolve records despite other differences, it can also be mapped as a **TRUSTED_ID_NUMBER** with the **TRUSTED_ID_TYPE** of “SSN” to resolve within and across data  sources that are so trusted.
 
 - A **TRUSTED_ID** can also be used to manually force records together or apart. Prior to use, please [read the documentation.](https://senzing.zendesk.com/hc/en-us/articles/360023523354-How-to-force-records-together-or-apart)
     
-- Use  **OTHER_ID** sparingly! It is just a catch-all for identifiers you don't understand well but still want to use to help match records to entities. If you have custom identifiers, you need to configure your identifier in Senzing.  (See Additional Configuration for more information.)
+- Use  **OTHER_ID** sparingly! It is just a catch-all for identifiers you don't understand well but still want to use to help match records to entities. If you have custom identifiers, you need to configure your identifier in Senzing.  (See Additional Configuration for more information.) {link}
 
 
 ### Attributes for identifiers issued by organizations
@@ -246,7 +242,9 @@ The following social media attributes are available.
 ### Attributes for group associations
 
 Groups a person belongs to can also be useful for resolving entities. Consider two contact lists that only
-have name and who they work for as useful attributes.
+have name and who they work for as useful attributes. 
+
+Group associations do not create disclosed relationships{link}. Group associations help resolve entities whereas disclosed relationships help relate them.This does not create a disclosed relationship {link}, rather makes it easier to resolve entities within organizations. For example, If all you have in common between two data sources are name and who they work for, a group association can help resolve the Joe Smiths that work at ABC company together.
 
 | Attribute name | Data Type | Example | Notes |
 | ----------- | ----------- | ----------- |----------- |
@@ -256,14 +254,12 @@ have name and who they work for as useful attributes.
 | GROUP_ASSN_ID_TYPE | String | DUNS | When the group a person is associated with has a registered DUNS identifier, place the type of identifier here.| 
 | GROUP_ASSN_ID_NUMBER | String | 12345 | When the group a person is associated with has registered identifier, place the identifier here.| 
 
-**_Important Notes:_**
+**Important**
 
-- Group associations should not be confused with disclosed relationships described later in this document. Group associations help resolve entities whereas disclosed relationships help relate them.
-- If all you have in common between two data sources are name and who they work for, a group association can help resolve the Joe Smiths that work at ABC company together.
 - Group associations are subject to default entity thresholds to help reduce false positives and keep the system fast. Therefore they will not help resolve _all_ the employees of a large company across data sources. But they could help to resolve the smaller groups of executives, primary contacts, or owners of large companies across data sources.
 
 ## Mapping Source Data
-We are here to help anyone! [Request a free mapping review session](https://senzing.zendesk.com/hc/en-us/requests/new)  with Success Team.
+We are here to help anyone! [Request a free mapping review session](https://senzing.zendesk.com/hc/en-us/requests/new)  with our Success Team.
 
 Senzing entity resolution works best when as many relevant features as possible are mapped from your source data. In the next section, we will look at examples of features of map people and companies. We've provided the corresponding samples for people and companies in [CSV](https://github.com/missulmer/SZGESv3/tree/main/sample_csvs) and [JSON](https://github.com/missulmer/SZGESv3/tree/main/json_sample) via Github. 
 
@@ -281,8 +277,7 @@ These files contain the likely fields you will run into when mapping organizatio
 
 ** Sample Features for An Organization**
 
-The [sample_organization.csv](https://github.com/missulmer/SZGESv3/tree/main/sample_csvs) attached to this article can be used to map your data to if desired. There is
-also a corresponding sample_organization.json file if you prefer.  The sample organization structure contains fields for ...
+The [sample_organization.csv](https://github.com/missulmer/SZGESv3/tree/main/sample_csvs) can be used to map your data to if desired. There is also a corresponding [sample_organization.json](https://github.com/missulmer/SZGESv3/blob/main/json_sample/sample_company.json) file if you prefer.  The sample organization structure contains the follow fields:
 
 - Primary name
 - Tax ID number, like employer identification number
@@ -297,7 +292,7 @@ also a corresponding sample_organization.json file if you prefer.  The sample or
 We recommend JSON due to its hierarchical structure which allows for multiple names, addresses, phones, etc to be presented in a single structure as one record may have only one address and another may have five. Where as CSV files are flat and multiple values must be presented as additional columns, so if the maximum number of addresses is five, then all rows in the csv file will include space for five addresses, whether needed for that record, or not.
 
 
-### Creating JSON files
+## Creating JSON files
 
 Below is the basic structure of a json record the engine can consume. Note that most attributes are at the root level. However, lists must be used when there are multiple values for the same attributes.
 
@@ -356,7 +351,6 @@ Below is the basic structure of a json record the engine can consume. Note that 
 **[View on Github](https://github.com/missulmer/SZGESv3/blob/main/json_sample/sample_person.json)**
 
 ### Sample JSON Describing Companies
-
 
 ~~~
 {"DATA_SOURCE": "COMPANYDATA ",
@@ -455,7 +449,7 @@ Below is the basic structure of a json record the engine can consume. Note that 
 
 Have questions? [Ask our Success Team](https://senzing.zendesk.com/hc/en-us/requests/new). We are happy to help anyone.
 
-### Creating CSV files
+## Creating CSV files
 
 Mapping csv files is normally accomplished by replacing the column header names with the registered attributes names contained in this specification. 
 
@@ -536,7 +530,9 @@ following special labels can be used to augment a feature’s weight ...
 
 ### Understanding Disclosed Relationships
 
-Disclosed relationships are essential when systems or people make decisions based on a contextual awareness from the data of known relationships between entities. Some data sources keep track of known relationships between entities, such as familial relationships and company hierarchies. This structure allows you to tell the Senzing software about such relationships. Look for a table within the source system that defines such relationships use them to implement your disclosed relationship mappings.
+What do we mean by the term 'disclosed relationship'?  Records describing people or organizations may contain specific fields that designate the presence of a relationship, like a spouse, parental role, company owner, and more.  Disclosed relationships differ from what Senzing calls 'discovered relationships' because the connection between the entities is *disclosed* in the record data instead of *discovered* in the entity resolution process using data from multiple records.
+
+Disclosed relationships are essential when systems or people make decisions based on a contextual awareness known relationships between entities. Some data sources keep track of known relationships between entities, such as familial relationships and company hierarchies. This structure allows you to tell the Senzing software about such relationships. Look for a table within the source system that defines such relationships and use them to implement your disclosed relationship mappings.
 
 Examples of disclosed relationships include but are not limited to:
 
@@ -549,11 +545,11 @@ Examples of disclosed relationships include but are not limited to:
 
 These relationships can be hierarchical or one-directional, like in the case of "Parent Company."
 
-![Heirarchical Relationship](https://github.com/missulmer/SZGESv3/blob/main/Simple%20Hierarchy.png)
+![Heirarchical Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Simple%20Hierarchy.png)
 
 At the same time, others may be bi-directional, like Father, Son, Husband, or Wife. Directional relationships go from one entity to another.
 
-![Detailed bi-directional roles](https://github.com/missulmer/SZGESv3/blob/main/Domain%20Familial%20Detailed%20roles.png)
+![Detailed bi-directional roles](https://github.com/missulmer/SZGESv3/blob/main/md_images/Spouse%20Bi-directional.png)
   
   
 **Technical Terms**
@@ -583,7 +579,7 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 
 #### Parent Company
 
-![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/Domain%20Company.png)
+![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Domain%20Company%20labled.png)
 
 ~~~
 JSON sample
@@ -597,7 +593,7 @@ JSON sample
 ~~~
 #### Familial Detailed Roles (Bi-Directional)
 
-![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/Domain%20Familial%20Detailed%20roles.png)
+![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Domain%20Familial%20Detailed%20roles%20Labled.png)
 
 ~~~
 {"DATA_SOURCE": "CUSTOMERS", 
