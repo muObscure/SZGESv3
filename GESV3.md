@@ -10,7 +10,7 @@ Version: 3.0
 Date: July 3, 2021
 ```
 
-## Table of Contents
+# Table of Contents
 
  - Overview
 -  Dictionary of registered attributes
@@ -45,7 +45,7 @@ Date: July 3, 2021
 		-  AWS ECS (Non-AWS marketplace deployment)
 	
 
-## Overview
+#  Overview
 
 This document is for data experts, Data Engineering, ETL engineers, and systems engineering professionals evaluating or using Senzing Software to integrate their data sources.  
 
@@ -56,7 +56,7 @@ and across data sources. This specification focuses on entities that are persons
 
 Senzing is an entity repository that helps locate records for the same entity across data sources. Think of it as a pointer system to where an entity’s records can be found. These are the fields required to tie the records in Senzing back to the contributing sources.
 
-### Attributes for the record key
+## Attributes for the record key
 
 | Attribute Name| Type | Required | Example | Notes |
 | ----------- | ----------- | ----------- | ----------- | ----------- |
@@ -64,7 +64,7 @@ Senzing is an entity repository that helps locate records for the same entity ac
 | RECORD_ID | String | Desired | 1001 | If the records in your data source have a unique record ID use that value here. |
 
 
-### Use of Record IDs
+## Use of Record IDs
 
 When loading records from specific sources, it is useful to prefix the record ID with the source.  
 
@@ -83,7 +83,7 @@ Examples:
 - Usually, an entire file of records will be assigned the same **DATA_SOURCE** which is why it is marked optional above. Both the G2Loader in the direct install and StreamLoader in the docker  install offer the ability to assign a default DATA_SOURCE to a file.  This is explained further in the *Loading Data Handbook.* {Link}
 
 
-### Attributes for names of individuals or organizations
+## Attributes for names of individuals or organizations
 
 A name is a highly desirable feature to map. Most resolution rules will require a matching name.
 
@@ -112,7 +112,7 @@ A name is a highly desirable feature to map. Most resolution rules will require 
  - Sometimes there is both an organization name and a person name on a record, such as a contact list where you have the person and who they work for. In this case, you would map the person’s name as a name and the company as their employer. See Attributes for group associations for more information on this important distinction.
 
 
-### Attributes for addresses
+## Attributes for addresses
 
 Addresses are important, especially when identifiers are not available. One of the more common resolutions will be made on name and address.
 
@@ -140,7 +140,7 @@ Addresses are important, especially when identifiers are not available. One of t
 - The "BUSINESS” **ADDR_TYPE** adds weight to physical business addresses. See Special attribute types and labels for when to use this.
 
 
-### Attributes for phone numbers
+## Attributes for phone numbers
 
 Like addresses, phone numbers can be important, especially when identifiers are not available. A common resolution will be based on name, phone, and date of birth.
 
@@ -156,7 +156,7 @@ Like addresses, phone numbers can be important, especially when identifiers are 
 - The "MOBILE” phone type adds weight to mobile phones. See Special attribute types and labels for when to use this.
 
 
-### Attributes for physical and other attributes
+## Attributes for physical and other attributes
 
 Physical attributes can like DATE_OF_BIRTH help reduce over matching (false positives). Usually gender and date of birth are available and should be mapped if possible.
 
@@ -172,7 +172,7 @@ Physical attributes can like DATE_OF_BIRTH help reduce over matching (false posi
 |REGISTRATION_DATE | String | 2010-05-14 | This is the date the organization was registered, like date of birth is to a person.|
 | REGISTRATION_COUNTRY | String | US | This is the country the organization was registered in, like place of birth is to a person. |
 
-### Attributes for government issued identifiers
+## Attributes for government issued identifiers
 
 Government issued IDs help to confirm or deny matches. The following identifiers should be mapped if available.
 
@@ -196,7 +196,7 @@ Government issued IDs help to confirm or deny matches. The following identifiers
 | TRUSTED_ID_TYPE | String | TRUE_SSN | The type of ID that is to be trusted. See the note below
 | TRUSTED_ID_NUMBER | String | 123-45-1234 | The trusted unique ID.
 
-**_Important notes:_**
+**Important**
 
 - A **TRUSTED_ID** is a very special identifier that will resolve records together even if they have different names, dates of birth, or other identifiers. For example, if the SSN of a data source is so trusted it  should resolve records despite other differences, it can also be mapped as a **TRUSTED_ID_NUMBER** with the **TRUSTED_ID_TYPE** of “SSN” to resolve within and across data  sources that are so trusted.
 
@@ -205,7 +205,7 @@ Government issued IDs help to confirm or deny matches. The following identifiers
 - Use  **OTHER_ID** sparingly! It is just a catch-all for identifiers you don't understand well but still want to use to help match records to entities. If you have custom identifiers, you need to configure your identifier in Senzing.  (See Additional Configuration for more information.) {link}
 
 
-### Attributes for identifiers issued by organizations
+## Attributes for identifiers issued by organizations
 
 The following identifiers have been added over time and can also be mapped if available.
  
@@ -218,7 +218,7 @@ The following identifiers have been added over time and can also be mapped if av
 |LEI_NUMBER | String | 123123 | A unique ID for entities involved in financial transactions. ([Learn more](https://en.wikipedia.org/wiki/Legal_Entity_Identifier))|
 
 
-### Attributes for websites, emails and other social handles
+## Attributes for websites, emails and other social handles
 
 The following social media attributes are available.
 
@@ -239,9 +239,9 @@ The following social media attributes are available.
 | **VIBER** |String | xxxxx | This is the unique identifier in for this socal domain.|
 | **WECHAT** |String | xxxxx | This is the unique identifier in for this socal domain.|
 
-### Attributes for group associations
+## Attributes for group associations
 
-Groups a person belongs to can also be useful for resolving entities. Consider two contact lists that only
+The groups a person belongs to can also be useful for resolving entities. For example, two contact lists that only
 have name and who they work for as useful attributes. 
 
 Group associations do not create disclosed relationships{link}. Group associations help resolve entities whereas disclosed relationships help relate them.This does not create a disclosed relationship {link}, rather makes it easier to resolve entities within organizations. For example, If all you have in common between two data sources are name and who they work for, a group association can help resolve the Joe Smiths that work at ABC company together.
@@ -484,7 +484,7 @@ Here is the list of column headers that could be used to flatten out the JSON ex
 | AGE_BRACKET | |
 | INCOME_LEVEL | |
 
-**Mapping CSV Files**
+## Mapping CSV Files
 
 A mapped csv file actually looks this and is usually accomplished by simply replacing the current column
 headers with corresponding attribute labels and names in this specification.
@@ -552,7 +552,7 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 ![Detailed bi-directional roles](https://github.com/missulmer/SZGESv3/blob/main/md_images/Spouse%20Bi-directional.png)
   
   
-**Technical Terms**
+###**Technical Terms**
 
 
 | Name      | Description|
@@ -563,7 +563,7 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 | Pointer Key |See Anchor Key above. The pointer key points to a specific entity by their ID to connect the relationship.|
 |Pointer Role | The pointer role defines the relationship, like SPOUSE or PARENT.|
 
-### Figure 1: Domain, Pointer, Anchor and Key
+#### Figure 1: Domain, Pointer, Anchor and Key
 ![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Domain%20Familial%20Detailed%20roles%20Labled.png)
 
 ### Attributes for Implmenting Disclosed Relationships
@@ -576,7 +576,7 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 | REL_POINTER_KEY | String | 1001 | See rel_anchor_key above. A rel_pointer_domain and key on one record point to a rel_anchor_domain and key on another record to in order to create a relationship between them.|
 | REL_POINTER_ROLE | String | SPOUSE | This is the role the anchor record plays in relationship to the pointer record. Note: Be careful not to use very long names here as so they are should appear on the line between two nodes on a graph.
 
-### Disclosed Relationship JSON Examples
+## Disclosed Relationship JSON Examples
 
 #### Parent Company
 ##### Figure 2: Company Hierarchy
@@ -586,17 +586,15 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 JSON sample
 ~~~
 #### Familial Spouse 
-##### Figure 2: Bi-directional relationship
+##### Figure 3: Bi-directional relationship
 ![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Spouse%20Bi-directional%20labled.png)
 
 ~~~
 JSON sample
 ~~~
 #### Familial Detailed Roles 
-##### Figure 2: Bi-directional relationship with detailed roles
+##### Figure 4: Bi-directional relationship with detailed roles
 ![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Domain%20Familial%20Detailed%20roles%20Labled.png)
-
-
 
 ~~~
 {"DATA_SOURCE": "CUSTOMERS", 
