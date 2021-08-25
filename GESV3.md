@@ -586,7 +586,7 @@ JSON sample
 ~~~
 #### Familial Spouse (Bi-Directional)
 
-![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/Spouse%20Bi-directional.png)
+![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Spouse%20Bi-directional%20labled.png)
 
 ~~~
 JSON sample
