@@ -580,22 +580,24 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 ### Disclosed Relationship JSON Examples
 
 #### Parent Company
-
+##### Figure 2: Company Hierarchy
 ![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Domain%20Company%20labled.png)
 
 ~~~
 JSON sample
 ~~~
-#### Familial Spouse (Bi-Directional)
-
+#### Familial Spouse 
+##### Figure 2: Bi-directional relationship
 ![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Spouse%20Bi-directional%20labled.png)
 
 ~~~
 JSON sample
 ~~~
-#### Familial Detailed Roles (Bi-Directional)
-
+#### Familial Detailed Roles 
+##### Figure 2: Bi-directional relationship with detailed roles
 ![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Domain%20Familial%20Detailed%20roles%20Labled.png)
+
+
 
 ~~~
 {"DATA_SOURCE": "CUSTOMERS", 
