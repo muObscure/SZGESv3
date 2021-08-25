@@ -557,7 +557,7 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 
 | Name      | Description|
 | ----------- | ----------- |
-|Anchor Domain | Anchor Domains describe the feature grouping which identifies entities uniquely. (E.g. Customer_ID or Company_ID.|
+|Anchor Domain | Anchor Domains describe the feature grouping which identifies entities uniquely. (E.g. Customer_ID or Company_ID.)|
 |Anchor Key | An anchor key is the unique identifier from within the domain that anchors the connection to an entity.|
 |Pointer Domain |The pointer domain points back to the feature grouping (domain) which identifies entities. It will match the anchor domain.|
 | Pointer Key |See Anchor Key above. The pointer key points to a specific entity by their ID to connect the relationship.|
