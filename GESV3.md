@@ -552,7 +552,7 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 ![Detailed bi-directional roles](https://github.com/missulmer/SZGESv3/blob/main/md_images/Spouse%20Bi-directional.png)
   
   
-**Technical Terms**
+###**Technical Terms**
 
 
 | Name      | Description|
@@ -563,7 +563,8 @@ At the same time, others may be bi-directional, like Father, Son, Husband, or Wi
 | Pointer Key |See Anchor Key above. The pointer key points to a specific entity by their ID to connect the relationship.|
 |Pointer Role | The pointer role defines the relationship, like SPOUSE or PARENT.|
 
-
+#### Example Image
+![Parent Company Disclosed Relationship](https://github.com/missulmer/SZGESv3/blob/main/md_images/Domain%20Familial%20Detailed%20roles%20Labled.png)
 
 ### Attributes for Implmenting Disclosed Relationships
 
